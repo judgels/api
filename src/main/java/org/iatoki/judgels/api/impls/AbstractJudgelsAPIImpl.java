@@ -95,9 +95,9 @@ public abstract class AbstractJudgelsAPIImpl {
 
     private RequestConfig constructDefaultRequestConfig() {
         return RequestConfig.custom()
-                .setConnectionRequestTimeout(30 * 1000)
-                .setSocketTimeout(30 * 1000)
-                .setConnectTimeout(30 * 1000)
+                .setConnectionRequestTimeout(90 * 1000)
+                .setSocketTimeout(90 * 1000)
+                .setConnectTimeout(90 * 1000)
                 .build();
     }
 
