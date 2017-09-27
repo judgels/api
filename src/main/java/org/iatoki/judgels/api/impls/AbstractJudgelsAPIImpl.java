@@ -26,12 +26,17 @@ import java.util.Map;
 
 public abstract class AbstractJudgelsAPIImpl {
 
-    private static final String API_URL_PREFIX = "/api/v1";
-
+    private final String apiUrlPrefix;
     private final String baseUrl;
 
     protected AbstractJudgelsAPIImpl(String baseUrl) {
         this.baseUrl = baseUrl;
+        this.apiUrlPrefix = "/api/v1";
+    }
+
+    protected AbstractJudgelsAPIImpl(String baseUrl, String apiUrlPrefix) {
+        this.baseUrl = baseUrl;
+        this.apiUrlPrefix = apiUrlPrefix;
     }
 
     protected abstract void setAuthorization(HttpRequestBase httpRequest);
@@ -65,6 +70,22 @@ public abstract class AbstractJudgelsAPIImpl {
         return sendRequest(httpClient, httpPost);
     }
 
+    protected final JudgelsAPIRawResponseBody sendPostRequestWithJsonBody(String path, JsonElement body) {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(constructDefaultRequestConfig()).build();
+        HttpPost httpPost = new HttpPost(getEndpoint(path));
+
+        if (body != null) {
+            httpPost.setHeader("Content-Type", "application/json");
+            try {
+                httpPost.setEntity(new StringEntity(body.toString()));
+            } catch (UnsupportedEncodingException e) {
+                throw new JudgelsAPIClientException(httpPost, e);
+            }
+        }
+
+        return sendRequest(httpClient, httpPost);
+    }
+
     protected final String interpolatePath(String path, Object... args) {
         String interpolatedPath = path;
         for (Object arg : args) {
@@ -79,7 +100,7 @@ public abstract class AbstractJudgelsAPIImpl {
 
     protected final String getEndpoint(String path, Map<String, String> params) {
         try {
-            URIBuilder uriBuilder = new URIBuilder(baseUrl).setPath(API_URL_PREFIX + path);
+            URIBuilder uriBuilder = new URIBuilder(baseUrl).setPath(apiUrlPrefix + path);
 
             if (params != null) {
                 for (Map.Entry<String, String> param : params.entrySet()) {

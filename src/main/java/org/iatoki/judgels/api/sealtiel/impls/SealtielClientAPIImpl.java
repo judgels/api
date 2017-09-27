@@ -8,45 +8,32 @@ import org.iatoki.judgels.api.sealtiel.SealtielMessage;
 public final class SealtielClientAPIImpl extends AbstractJudgelsClientAPIImpl implements SealtielClientAPI {
 
     public SealtielClientAPIImpl(String baseUrl, String clientJid, String clientSecret) {
-        super(baseUrl, clientJid, clientSecret);
+        super(baseUrl, "/api/v2", clientJid, clientSecret);
     }
 
     @Override
     public SealtielMessage fetchMessage() {
-        return sendPostRequest("/messages/fetch").asObjectFromJson(SealtielMessage.class);
+        return sendPostRequest("/messages/receive").asObjectFromJson(SealtielMessage.class);
     }
 
     @Override
     public void acknowledgeMessage(long messageId) {
-        sendPostRequest(interpolatePath("/messages/:messageId/acknowledge", messageId));
-    }
-
-    @Override
-    public void extendMessageTimeout(long messageId) {
-        sendPostRequest(interpolatePath("/messages/:messageId/extendTimeout", messageId));
+        sendPostRequest(interpolatePath("/messages/:messageId/confirm", messageId));
     }
 
     @Override
     public void sendMessage(String targetClientJid, String messageType, String message) {
         JsonObject body = new JsonObject();
 
-        body.addProperty("targetClientJid", targetClientJid);
-        body.addProperty("messageType", messageType);
-        body.addProperty("message", message);
-        body.addProperty("priority", 3);
+        body.addProperty("targetJid", targetClientJid);
+        body.addProperty("type", messageType);
+        body.addProperty("content", message);
 
-        sendPostRequest("/messages/send", body);
+        sendPostRequestWithJsonBody("/messages/send", body);
     }
 
     @Override
     public void sendLowPriorityMessage(String targetClientJid, String messageType, String message) {
-        JsonObject body = new JsonObject();
-
-        body.addProperty("targetClientJid", targetClientJid);
-        body.addProperty("messageType", messageType);
-        body.addProperty("message", message);
-        body.addProperty("priority", 1);
-
-        sendPostRequest("/messages/send", body);
+        sendMessage(targetClientJid, messageType, message);
     }
 }
