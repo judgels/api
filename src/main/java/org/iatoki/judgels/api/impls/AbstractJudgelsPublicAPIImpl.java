@@ -1,6 +1,5 @@
 package org.iatoki.judgels.api.impls;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.iatoki.judgels.api.JudgelsPublicAPI;
 
@@ -10,6 +9,11 @@ public abstract class AbstractJudgelsPublicAPIImpl extends AbstractJudgelsAPIImp
 
     public AbstractJudgelsPublicAPIImpl(String baseUrl) {
         super(baseUrl);
+        this.accessToken = null;
+    }
+
+    public AbstractJudgelsPublicAPIImpl(String baseUrl, String apiUrlPrefix) {
+        super(baseUrl, apiUrlPrefix);
         this.accessToken = null;
     }
 
@@ -30,7 +34,7 @@ public abstract class AbstractJudgelsPublicAPIImpl extends AbstractJudgelsAPIImp
     @Override
     protected final void setAuthorization(HttpRequestBase httpRequest) {
         if (accessToken != null) {
-            httpRequest.setHeader("Authorization", "Bearer " + Base64.encodeBase64String(accessToken.getBytes()));
+            httpRequest.setHeader("Authorization", "Bearer " + accessToken);
         } else {
             httpRequest.removeHeaders("Authorization");
         }

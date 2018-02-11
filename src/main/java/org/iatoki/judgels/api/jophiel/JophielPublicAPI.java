@@ -8,5 +8,7 @@ public interface JophielPublicAPI extends JudgelsPublicAPI {
 
     JophielUser findUserByUsername(String username);
 
+    JophielUserProfile findUserProfileByJid(String userJid);
+
     String getUserAutocompleteAPIEndpoint();
 }

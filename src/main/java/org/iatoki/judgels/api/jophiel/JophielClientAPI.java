@@ -6,14 +6,12 @@ import java.util.List;
 
 public interface JophielClientAPI extends JudgelsClientAPI {
 
-    JophielUser findUserByUsernameAndPassword(String username, String password);
-
-    JophielUser findUserByAccessToken(String accessToken);
-
+    @Deprecated
     void sendUserActivityMessages(List<JophielUserActivityMessage> activityMessages);
 
     String getUserEditProfileEndpoint();
 
+    @Deprecated
     String getUserSearchProfileEndpoint();
 
     String getRegisterEndpoint();

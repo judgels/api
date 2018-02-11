@@ -5,11 +5,12 @@ import org.iatoki.judgels.api.JudgelsAPIClientException;
 import org.iatoki.judgels.api.impls.AbstractJudgelsPublicAPIImpl;
 import org.iatoki.judgels.api.jophiel.JophielPublicAPI;
 import org.iatoki.judgels.api.jophiel.JophielUser;
+import org.iatoki.judgels.api.jophiel.JophielUserProfile;
 
 public final class JophielPublicAPIImpl extends AbstractJudgelsPublicAPIImpl implements JophielPublicAPI {
 
     public JophielPublicAPIImpl(String baseUrl) {
-        super(baseUrl);
+        super(baseUrl, "/api/v2");
     }
 
     @Override
@@ -28,6 +29,11 @@ public final class JophielPublicAPIImpl extends AbstractJudgelsPublicAPIImpl imp
                 throw e;
             }
         }
+    }
+
+    @Override
+    public JophielUserProfile findUserProfileByJid(String userJid) {
+        return sendGetRequest(interpolatePath("/users/:userJid/profile", userJid)).asObjectFromJson(JophielUserProfile.class);
     }
 
     @Override
