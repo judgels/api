@@ -19,6 +19,11 @@ public final class JophielPublicAPIImpl extends AbstractJudgelsPublicAPIImpl imp
     }
 
     @Override
+    public JophielUser findMyself() {
+        return sendGetRequest("/users/me").asObjectFromJson(JophielUser.class);
+    }
+
+    @Override
     public JophielUser findUserByUsername(String username) {
         try {
             return sendGetRequest(interpolatePath("/users/username/:username", username)).asObjectFromJson(JophielUser.class);
